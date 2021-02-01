@@ -1,0 +1,162 @@
+name:
+  value:  'neural_ode'
+  type: str
+  help: 'Experiment name. Defines the experiment directory'
+dataset:
+  value:  'concentric_sphere2'
+  type: str
+  choices: ['mnist', 'cifar10',
+            'three_minima', 'concentric_sphere2', 'concentric_sphere3',
+            'concentric_sphere10', 'concentric_sphere900']
+  help: 'Name of the dataset'
+network:
+  value:  'simple_odenet'
+  type: str
+  choices: ['odenet', 'simple_odenet', 'linear_odenet']
+  help: 'Architecture used for the Neural ODE'
+adjoint:
+  value:  false
+  type: bool
+  help: 'If specified, the adjoint method is used for backpropagation'
+autodif:
+  value: 'naive'
+  type: str
+  choices: ['adjoint', 'naive']
+  help: 'Choice of solver used for backpropagation'
+tol:
+  value:  1.e-8
+  type: float
+  help: 'Tolerance value for multi-step solvers'
+step_size:
+  value:  1.0
+  type: float
+  help: 'Step size used for fixed step solvers'
+solver:
+  value:  'euler'
+  type: str
+  choices: ['dopri5', 'fehlberg2', 'euler', 'midpoint', 'rk4']
+  help: 'Choice of ODE solver'
+split:
+  value:  'train'
+  type: str
+  choices: ['train', 'test']
+  help: 'Data split to use in the current experiment'
+phase:
+  value:  'train'
+  type: str
+  choices: ['train', 'infer']
+  help: 'Training or inference'
+ch_residual_block:
+  value:  32
+  type: int
+  help: 'Number of channels in residual block'
+act:
+  value:  'relu'
+  type: str
+  choices: ['relu', 'lrelu', 'sigmoid']
+  help: 'Activation function used'
+init_type:
+  value:  'kaiming'
+  type: str
+  choices: ['normal', 'xavier', 'kaiming', 'orthogonal']
+  help: 'Initialization used for network'
+init_variance:
+  value:  0.02
+  type: float
+  help: 'Variance of the initialization distribution'
+output_dir:
+  value:  './experiments'
+  type: str
+  help: 'Directory where the run is saved to'
+niter:
+  value:  1
+  type: int
+  help: 'Number of iterations to train'
+batch_size:
+  value:  64
+  type: int
+  help: 'Number of data samples per GPU'
+serial_batches:
+  value:  false
+  type: bool
+  help: 'Indicates whether batches are shuffled'
+lr:
+  value:  1.e-4
+  type: float
+  help: 'Learning rate'
+optimizer:
+  value:  'adam'
+  type: str
+  choices: ['sgd', 'adam', 'rmsprop']
+  help: 'Choice of optimizer used for training'
+weight_decay:
+  value:  0.
+  type: float
+  help: 'L2 weight decay penalty'
+use_gpu:
+  value:  false
+  type: bool
+  help: 'Specify to use gpus'
+gpu_ids:
+  value:  '0'
+  type: str
+  help: 'GPU-ids: e.g. 0  0,1,2, 0,2'
+num_threads:
+  value:  2
+  type: int
+  help: 'Number of workers to load batch data'
+evaluate_test_acc:
+  value:  false
+  type: bool
+  help: 'If specified, during the training phase, the test accuracy is also calculated for each epoch'
+use_step_adaption_algo:
+  value:  false
+  type: bool
+  help: 'If set step size is adjusted automatically'
+threshold:
+  value: 0.1
+  type: float
+  help: 'Maximum difference between accuracies. If above precision of training solver is increased. If below precision
+  training solver remains constant.'
+initial_tol:
+  value: 1.e-6
+  type: float
+  help: 'Initial tolerance for tolerance adaption algo.'
+adaption_interval:
+  value: 50
+  type: int
+  help: 'Interval at which adaption algo is called'
+max_steps:
+  value:  500
+  type: int
+  help: 'Maximum number of steps taken by the solver. This is especially important for large network. So far only
+  implemented for fixed step solvers.'
+evaluate_with_dif_solver:
+  value:  false
+  type: bool
+  help: 'Evaluate model with different solver after finishing a run'
+test_factor_list:
+  value:  [0.5, 1., 2.]
+  type: float
+  nargs: '+'
+  help: 'test_factor to calculate test step size'
+test_solver_list:
+  value:  ['euler', 'midpoint', 'rk4']
+  type: str
+  nargs: '+'
+  choices: ['dopri5', 'fehlberg2',
+             'euler', 'midpoint', 'rk4']
+  help: 'test_factor to calculate test step size'
+model_checkpoint_freq:
+  value:  500
+  type: int
+  help: 'Iteration frequency for model checkpoints'
+random_seed:
+  value:  0
+  type: int
+  help: 'Iteration frequency for model checkpoints'
+use_tensorboard:
+  value:  false
+  type: bool
+  help: 'Specifies whether to use tensorboard for logging'
+
