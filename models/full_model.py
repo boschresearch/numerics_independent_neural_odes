@@ -25,7 +25,7 @@ from .residual_block import LinearResidualBlock, \
     ResidualBlock, SimpleResidualBlock
 from .models import ODEBlock, ODENet
 from .classifier import SimpleClassifier
-from .misc import Flatten
+from .convultions import Flatten
 
 
 class ModelBase(nn.Module):

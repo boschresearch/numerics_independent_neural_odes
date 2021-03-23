@@ -27,7 +27,8 @@ from util.model_evaluation import calculate_accuracy
 
 def find_initial_step_size(mymodel: ModelBase, batch_data: torch.Tensor, order: int) -> float:
     """
-    Calculate initial step size as described in Hairer Wanner
+    Calculate initial step size as described in Hairer et al. Solving Ordinary Differential Equations I -
+    Nonstiff Problems, 1993, p.169
     :param mymodel: Model to be trained
     :param batch_data: Current batch of data
     :param order: order of the solver to be used
@@ -47,7 +48,7 @@ def find_initial_step_size(mymodel: ModelBase, batch_data: torch.Tensor, order: 
         f_y1 = mymodel.feature_ex_block.odefunc.net(y1)
         d2 = torch.mean(torch.norm(f_y1 - f_y0, dim=-1))/h0
         if torch.max(d1, d2) < 1e-15:
-            h1 = torch.max(1e-6, h0*1e-3)
+            h1 = torch.max(torch.tensor(1e-6), h0*1e-3)
         else:
             h1 = (0.01/torch.max(d1, d2))**(1/(p+1))
         step_size = torch.min(100*h0, h1)
@@ -55,6 +56,14 @@ def find_initial_step_size(mymodel: ModelBase, batch_data: torch.Tensor, order: 
 
 
 def find_test_model(solver: str, step_size: float) -> (str, float):
+    """
+    Given the train solver and train step size this function returns a test solver and test step size.
+    See Algorithm 2 in the paper for more details
+    :param solver: solver used for training
+    :param step_size: step size used for training
+    :return: test solver, test step size
+
+    """
     acc_fact = 50
     if solver == 'euler':
         if 1./step_size > acc_fact:
@@ -84,6 +93,16 @@ def find_test_model(solver: str, step_size: float) -> (str, float):
 
 def adapt_step_size(trainer: ModelTrainer, train_solver_acc: float, x: torch.Tensor, y: torch.Tensor,
                     opts: ExperimentOptions):
+    """
+    Adapt the step size used for training as described in Algorithm 2 in the paper.
+    If step size is too large to guarantee continuous dynamics, the step size used for training is decreased.
+    Else the step size is increased, to achieve minimal training time.
+    :param trainer: model trainer
+    :param train_solver_acc: accuracy reached by the train solver
+    :param x: batch data
+    :param y: batch labels
+    :param opts: experiment options used for training the Neural ODE
+    """
     threshold = opts.threshold
     max_steps = opts.max_steps
     test_solver_acc = test_model(trainer=trainer, x=x, y=y, opts=opts)
@@ -115,6 +134,14 @@ def adapt_step_size(trainer: ModelTrainer, train_solver_acc: float, x: torch.Ten
 
 
 def test_model(trainer: ModelTrainer, x: torch.Tensor, y: torch.Tensor, opts: ExperimentOptions) -> float:
+    """
+    Evaluate the test solver accuracy with a test solver and a test step size
+    :param trainer: model trainer
+    :param x: batch data
+    :param y: batch labels
+    :param opts: experiment options used for training the Neural ODE
+    :return: test solver accuracy
+    """
     train_step_size = trainer.model.feature_ex_block.options['step_size']
     train_solver = trainer.model.feature_ex_block.solver
     test_solver, test_step_size = find_test_model(solver=train_solver,

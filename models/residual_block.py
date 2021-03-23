@@ -18,7 +18,7 @@
 
 import torch
 import torch.nn as nn
-from .misc import get_activation
+from .convultions import get_activation
 
 
 class SimpleResidualBlock(nn.Module):

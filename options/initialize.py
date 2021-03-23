@@ -28,7 +28,6 @@ experiment_dir = os.path.join(dirname, '..', 'experiments')
 
 
 def initialize(parser: ArgumentParser) -> ArgumentParser:
-    # Experiment options
     parser.add_argument('--options_file', type=str,
                         default=os.path.join(dirname, '..', 'options', 'default_config.yaml'),
                         help='File to use to load options from')
@@ -40,22 +39,20 @@ def initialize(parser: ArgumentParser) -> ArgumentParser:
 
 def initialize_parser_from_dict(config_dict: Dict, parser: ArgumentParser) -> ArgumentParser:
     for key, settings in config_dict.items():
-        if 'choices' in settings:
-            if 'nargs' in settings:
-                parser.add_argument(f'--{key}', type=locate(settings['type']),
-                                    nargs=settings['nargs'],
-                                    choices=settings['choices'],
-                                    help=settings['help'])
-            else:
-                parser.add_argument(f'--{key}', type=locate(settings['type']),
-                                    choices=settings['choices'],
-                                    help=settings['help'])
-        elif 'nargs' in settings:
-            parser.add_argument(f'--{key}', type=locate(settings['type']),
-                                nargs=settings['nargs'],
-                                help=settings['help'])
+        add_argument_kwargs = dict(
+            help=settings['help']
+        )
+        if settings.get('type') == 'bool':
+            action = 'store_true' if not settings.get('value') else 'store_false'
+            add_argument_kwargs['action'] = action
         else:
+            add_argument_kwargs['type'] = locate(settings['type'])
+            if 'value' in settings:
+                add_argument_kwargs['default'] = settings['value']
+        if 'nargs' in settings:
+            add_argument_kwargs['nargs'] = settings['nargs']
+        if 'choices' in settings:
+            add_argument_kwargs['choices'] = settings['choices']
+        parser.add_argument(f'--{key}', **add_argument_kwargs)
 
-            parser.add_argument(f'--{key}', type=locate(settings['type']),
-                                help=settings['help'])
     return parser

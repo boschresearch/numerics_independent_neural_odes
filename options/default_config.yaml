@@ -69,11 +69,11 @@ output_dir:
   type: str
   help: 'Directory where the run is saved to'
 niter:
-  value:  1
+  value:  3000
   type: int
   help: 'Number of iterations to train'
 batch_size:
-  value:  64
+  value:  128
   type: int
   help: 'Number of data samples per GPU'
 serial_batches:

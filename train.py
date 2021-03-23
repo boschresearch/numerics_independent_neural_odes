@@ -36,6 +36,7 @@ from options.initialize import initialize
 from trainer.trainer import ModelTrainer
 from util.helper_functions import inf_generator, return_order
 from util.model_evaluation import calculate_accuracy, evaluate_model
+from util.plot_results import plot_results
 from util.step_adaption_algo import find_initial_step_size, adapt_step_size
 from util.tol_adaption_algo import adapt_tol
 
@@ -110,6 +111,7 @@ class TrainModel:
                     f"eval_with_dif_solver_iter_{self.opts.niter - 1}.pt",
                 ),
             )
+        plot_results(self.opts)
 
     def _get_data_generator(self) -> Generator:
         # load the dataset

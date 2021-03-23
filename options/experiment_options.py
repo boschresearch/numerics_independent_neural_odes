@@ -18,6 +18,7 @@
 
 import os
 import pickle
+import shutil
 from argparse import Namespace
 from typing import Type, List, Dict
 
@@ -101,6 +102,16 @@ class ExperimentOptions:
         self.initialize_setup()
 
     def initialize_setup(self):
+        self.experiment_dir = os.path.abspath(self.experiment_dir)
+        if os.path.exists(self.experiment_dir):
+            if os.listdir(self.experiment_dir):
+                print(f"The experiment directory {self.experiment_dir} provided by the user is not empty. "
+                      f"If you continue the contents of this folder will be deleted!\n"
+                      f"If you want to change the folder please "
+                      "restart the code using --experiment_dir command line option.")
+                input("Press ENTER to continue (deletes experiment directory!) ...")
+                shutil.rmtree(self.experiment_dir)
+
         utils.mkdirs(self.experiment_dir)
         utils.mkdirs(self.checkpoints_dir)
         if self.use_tensorboard:

@@ -3,5 +3,5 @@ PyYAML
 torchdiffeq
 torch
 torchvision
-pickle
-
+scipy
+matplotlib
