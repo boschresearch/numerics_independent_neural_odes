@@ -25,8 +25,9 @@ import torch.utils.data as data
 
 from data.base_dataset import BaseDataset
 from data.sphere_dataset_generation.generate_sphere_dataset import (
-    generate_and_save_data,
+    generate_sphere_dataset,
 )
+from data.three_minima_dataset_generation.data_generation import generate_three_minima_dataset
 
 
 def load_obj(name, path):
@@ -80,8 +81,13 @@ class ToyDataset(BaseDataset):
         path = os.path.join(path, self.dataset_name)
         if not os.path.exists(path):
             print(f"Dataset {self.dataset_name} does not exist. Generating dataset ...")
-            dim = int(re.search(r"\d+", self.dataset_name).group())
-            generate_and_save_data(dim=dim)
+            if "ConcentricSphere" in self.dataset_name:
+                dim = int(re.search(r"\d+", self.dataset_name).group())
+                generate_sphere_dataset(dim=dim)
+            elif self.dataset_name == "ThreeMinima":
+                generate_three_minima_dataset()
+            else:
+                raise NotImplementedError(f"Dataset with name {self.dataset_name} does not exist!")
             print("Finished dataset generation")
 
     def return_dataloader(

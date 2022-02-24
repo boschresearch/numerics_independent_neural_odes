@@ -62,7 +62,7 @@ def generate_dataset(dim, N):
     return data_set, labels
 
 
-def generate_and_save_data(dim):
+def generate_sphere_dataset(dim):
     data_dir = os.path.join(dirname, "datasets", f"ConcentricSphere{dim}")
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
@@ -78,4 +78,4 @@ def generate_and_save_data(dim):
 
 if __name__ == "__main__":
     # generate Concentric Sphere 2 data set
-    generate_and_save_data(dim=2)
+    generate_sphere_dataset(dim=2)
